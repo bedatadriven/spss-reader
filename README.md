@@ -1,3 +1,5 @@
+[![Build Status](https://jenkins.bedatadriven.com/view/All/job/spss-reader/badge/icon)](https://jenkins.bedatadriven.com/view/All/job/spss-reader/) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.bedatadriven.spss/spss-reader/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.bedatadriven.spss/spss-reader)
+
 
 # SPSS Reader
 
@@ -8,7 +10,7 @@ Java library to read SPSS files.
     <dependency>
        <groupId>com.bedatadriven</groupId>
        <artifactId>spss</artifactId>
-       <version>1.0.1</version>
+       <version>1.2</version>
     </dependency>
     
 ## Reading an SPSS File
