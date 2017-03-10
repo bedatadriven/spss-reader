@@ -39,7 +39,7 @@ public class SpssDataFileReader {
   /**
    * Values
    */
-  Object[] currentCase;
+  CaseBuffer currentCase;
 
 
   private FileHeader fileHeader;
@@ -182,7 +182,7 @@ public class SpssDataFileReader {
 
     } while (recordType != 999);
 
-    currentCase = new Object[variables.size()];
+    currentCase = new CaseBuffer(variables.size());
 
     if (!versionInfo.isCompressed()) {
       caseReader = new CaseReader(inputStream, variables, missingValueHeader, fileHeader.getNumCases(), currentCase);
@@ -243,20 +243,12 @@ public class SpssDataFileReader {
   }
 
 
-  public Double getDoubleValue(String variableName) {
+  public double getDoubleValue(String variableName) {
     return getDoubleValue(getVariableIndex(variableName));
   }
 
-  public Double getDoubleValue(int variableIndex) {
-    return (Double) currentCase[variableIndex];
-  }
-
-  public Integer getIntValue(String variableName) {
-    return getIntValue(getVariableIndex(variableName));
-  }
-
-  public Integer getIntValue(int variableIndex) {
-    return ((Number) currentCase[variableIndex]).intValue();
+  public double getDoubleValue(int variableIndex) {
+    return currentCase.getDoubleValue(variableIndex);
   }
 
   public String getStringValue(String variableName) {
@@ -264,11 +256,7 @@ public class SpssDataFileReader {
   }
 
   public String getStringValue(int variableIndex) {
-    return (String) currentCase[variableIndex];
-  }
-
-  public Object getValue(int variableIndex) {
-    return currentCase[variableIndex];
+    return currentCase.getStringValue(variableIndex);
   }
 
   public boolean isSystemMissing(String variableName) {
@@ -276,7 +264,7 @@ public class SpssDataFileReader {
   }
 
   public boolean isSystemMissing(int variableIndex) {
-    return currentCase[variableIndex] == null;
+    return currentCase.isSystemMissing(variableIndex);
   }
 
   public Map<Double, String> getValueLabels(String variableName) {

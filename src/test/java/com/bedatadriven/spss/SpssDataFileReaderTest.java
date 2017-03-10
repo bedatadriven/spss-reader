@@ -57,8 +57,8 @@ public class SpssDataFileReaderTest {
 
     assertTrue("read first case", reader.readNextCase());
 
-    assertEquals(14, (int)reader.getIntValue("ID"));
-    assertEquals(101, (int)reader.getIntValue("District"));
+    assertEquals(14, (int)reader.getDoubleValue("ID"));
+    assertEquals(101, (int)reader.getDoubleValue("District"));
 
     assertTrue(reader.isSystemMissing("q1"));
     assertFalse(reader.isSystemMissing("d6_2"));
@@ -78,7 +78,7 @@ public class SpssDataFileReaderTest {
       caseIndex++;
     }
 
-    assertEquals(55, (int)reader.getIntValue("ID"));
+    assertEquals(55, (int)reader.getDoubleValue("ID"));
     assertEquals(20098.33, reader.getDoubleValue("Sample_Weight"), 0.01);
 
   }

@@ -22,13 +22,13 @@ class CaseReader {
   protected final List<SpssVariable> variables;
   protected final SpssInputStream inputStream;
   protected final MissingValuesHeader missingValues;
-  protected final Object[] currentRow;
+  protected final CaseBuffer currentRow;
   protected final int numCases;
 
   protected int currentRowIndex;
 
   public CaseReader(SpssInputStream inputStream, List<SpssVariable> variables,
-                    MissingValuesHeader missingValues, int numCases, Object[] currentRow) {
+                    MissingValuesHeader missingValues, int numCases, CaseBuffer currentRow) {
     this.inputStream = inputStream;
     this.variables = variables;
     this.missingValues = missingValues;
@@ -57,13 +57,13 @@ class CaseReader {
       if (var.isNumeric()) {
         double value = inputStream.readDouble();
         if (value == missingValues.getSystemMissingValue()) {
-          currentRow[var.getIndex()] = null;
+          currentRow.setMissing(var.getIndex());
         } else {
-          currentRow[var.getIndex()] = value;
+          currentRow.set(var.getIndex(), value);
         }
       } else {
         byte[] value = inputStream.readBytes(SpssInputStream.alignSize(var.stringLength, 8));
-        currentRow[var.getIndex()] = inputStream.stringFromBytes(value);
+        currentRow.set(var.getIndex(), inputStream.stringFromBytes(value));
       }
     }
   }

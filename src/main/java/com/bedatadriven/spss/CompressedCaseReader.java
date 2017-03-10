@@ -56,7 +56,7 @@ class CompressedCaseReader extends CaseReader {
 
   public CompressedCaseReader(SpssInputStream inputStream,
                               List<SpssVariable> variables, MissingValuesHeader missingValues,
-                              int numCases, Object[] currentRow) {
+                              int numCases, CaseBuffer currentRow) {
 
     super(inputStream, variables, missingValues, numCases, currentRow);
 
@@ -88,11 +88,11 @@ class CompressedCaseReader extends CaseReader {
         storageFlag = readNextStorageFlag();
 
         if (storageFlag < MIN_STORAGE_FLAG) {
-          currentRow[var.getIndex()] = (double) (storageFlag - 100);
+          currentRow.set(var.getIndex(), (double) (storageFlag - 100));
         } else if (storageFlag == DOUBLE_FLAG) {
-          currentRow[var.getIndex()] = inputStream.readDouble();
+          currentRow.set(var.getIndex(), inputStream.readDouble());
         } else if (storageFlag == SYSMIS_FLAG) {
-          currentRow[var.getIndex()] = null;
+          currentRow.setMissing(var.getIndex());
         }
       } else {
         StringBuilder buffer = new StringBuilder();
@@ -123,7 +123,7 @@ class CompressedCaseReader extends CaseReader {
 
         } while (totalBytesRead < var.stringLength);
 
-        currentRow[var.getIndex()] = buffer.toString().trim();
+        currentRow.set(var.getIndex(), buffer.toString().trim());
       }
     }
   }
