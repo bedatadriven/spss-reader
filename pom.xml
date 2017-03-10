@@ -20,6 +20,8 @@
   <packaging>jar</packaging>
 
   <name>SPSS Datafile Reader</name>
+  <description>Reads statistical data files in SPSS .sav format.</description>
+  <url>https://github.com/bedatadriven/spss-reader</url>
 
   <licenses>
     <license>
