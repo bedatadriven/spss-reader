@@ -34,6 +34,16 @@ public class SpssVariable {
   private int typeCode;
 
   /**
+   * Variable format for print operations
+   */
+  private SpssVariableFormat printFormat;
+
+  /**
+   * Variable format for write operations
+   */
+  private SpssVariableFormat writeFormat;
+
+  /**
    * Maximum 8-byte name of the variable
    */
   String shortName;
@@ -129,8 +139,8 @@ public class SpssVariable {
     missing = new ArrayList<>();
     missingStrings = new ArrayList<>();
 
-    int print = inputStream.readInt(); // don't know what these are for
-    int write = inputStream.readInt(); // but don't seem to miss them...
+    printFormat = new SpssVariableFormat(inputStream.readInt());
+    writeFormat = new SpssVariableFormat(inputStream.readInt());
 
     // we're assuming that the short name is always ASCII-encoded
     // but should verify...
@@ -187,6 +197,14 @@ public class SpssVariable {
 
   public int getTypeCode() {
     return typeCode;
+  }
+
+  public SpssVariableFormat getPrintFormat() {
+    return printFormat;
+  }
+
+  public SpssVariableFormat getWriteFormat() {
+    return writeFormat;
   }
 
   int getPositionInRecord() {
