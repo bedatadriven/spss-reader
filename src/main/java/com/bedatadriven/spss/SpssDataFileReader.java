@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 BeDataDriven Groep BV
+ * Copyright 2017-2019 BeDataDriven Groep BV
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -86,7 +86,7 @@ public class SpssDataFileReader {
     this(new SpssInputStream(input));
   }
 
-  private SpssDataFileReader(SpssInputStream inStream) throws IOException {
+  public SpssDataFileReader(SpssInputStream inStream) throws IOException {
     inputStream = inStream;
 
     String fileType = new String(inputStream.readBytes(4));
