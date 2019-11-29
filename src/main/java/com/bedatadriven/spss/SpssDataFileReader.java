@@ -94,9 +94,6 @@ public class SpssDataFileReader {
       throw new IOException("Expected record type != $FL2; not an SPSS file");
     }
 
-    int layoutCode = inputStream.readRawInt();
-    inputStream.setNeedToFlipBytes((layoutCode != 2));
-
     fileHeader = new FileHeader(inputStream);
 
     variableRecords = new SpssVariable[fileHeader.getCaseSize()];

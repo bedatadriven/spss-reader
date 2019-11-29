@@ -32,6 +32,8 @@ class FileHeader {
   public FileHeader(SpssInputStream inputStream) throws IOException {
 
     productName = new String(inputStream.readBytes(60));
+    int layoutCode = inputStream.readInt();
+    inputStream.setNeedToFlipBytes((layoutCode != 2 && layoutCode != 3));
 
     caseSize = inputStream.readInt();
 
