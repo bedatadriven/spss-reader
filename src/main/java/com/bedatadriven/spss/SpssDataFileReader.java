@@ -162,7 +162,10 @@ public class SpssDataFileReader {
             //case 5:  // Variable sets
             //case 6:  // Trends
             //case 11: // Display - don't know what this
-            //case 14: // very long strings
+            case 14: // very long strings
+              LongStringRecord r = new LongStringRecord(header, inStream);
+              r.parseInto(variables, variableNames);
+              break;
             //case 21: // Value Label Strings - don't know what this is
             default:
               // skip record

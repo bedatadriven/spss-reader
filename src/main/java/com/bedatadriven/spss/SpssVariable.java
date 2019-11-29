@@ -65,6 +65,14 @@ public class SpssVariable {
    * field in bytes
    */
   int stringLength;
+  
+  /**
+   * For variables stored as very long string value.
+   * Such strings get stored using multiple variables (as text),
+   * with each variable holding 255 bytes of the total string
+   * length, and the last variable the remainder. 
+   */
+  int longStringLength;
 
   /**
    * The variable's label
