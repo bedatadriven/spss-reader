@@ -14,6 +14,7 @@
 
 package com.bedatadriven.spss;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.List;
 
@@ -43,7 +44,14 @@ class CaseReader {
   }
 
   public final boolean readNext() throws IOException {
-    if (currentRowIndex + 1 < numCases) {
+    if(numCases < 0) {
+      try {
+        readRow();
+        return true;
+      } catch (EOFException e) {
+        return false;
+      }
+    } else if (currentRowIndex + 1 < numCases) {
       readRow();
       currentRowIndex++;
       return true;
