@@ -19,7 +19,7 @@ import java.io.IOException;
 class FileHeader {
 
   private String productName;
-  private int isCompressed;
+  private int compression;
   private int weightVariablePosition;
   private byte[] creationDate;
   private byte[] creationTime;
@@ -37,11 +37,11 @@ class FileHeader {
 
     caseSize = inputStream.readInt();
 
-    isCompressed = inputStream.readInt();
+    compression = inputStream.readInt();
     weightVariablePosition = inputStream.readInt();
 
     numCases = inputStream.readInt();
-
+    
     bias = inputStream.readDouble();
     creationDate = inputStream.readBytes(9);
     creationTime = inputStream.readBytes(8);
@@ -65,6 +65,13 @@ class FileHeader {
 
   public int getWeightVariableRecordIndex() {
     return weightVariablePosition;
+  }
+  
+  public boolean isCompressed() {
+    return compression > 0;
+  }
+  public int getCompression() {
+    return compression;
   }
 
 }

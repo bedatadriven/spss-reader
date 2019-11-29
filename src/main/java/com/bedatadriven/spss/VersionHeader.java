@@ -40,8 +40,4 @@ class VersionHeader {
     character = inputStream.readInt();
   }
 
-  public boolean isCompressed() {
-    return compression == 1;
-  }
-
 }

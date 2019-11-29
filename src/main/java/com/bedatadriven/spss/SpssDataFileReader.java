@@ -181,7 +181,7 @@ public class SpssDataFileReader {
 
     currentCase = new CaseBuffer(variables.size());
 
-    if (!versionInfo.isCompressed()) {
+    if (!isCompressed()) {
       caseReader = new CaseReader(inputStream, variables, missingValueHeader, fileHeader.getNumCases(), currentCase);
     } else {
       caseReader = new CompressedCaseReader(inputStream, variables, missingValueHeader, fileHeader.getNumCases(), currentCase);
@@ -213,7 +213,7 @@ public class SpssDataFileReader {
    * @return True if this datafile is compressed, false if its uncompressed
    */
   public boolean isCompressed() {
-    return versionInfo.isCompressed();
+    return fileHeader.isCompressed();
   }
 
   public String getVariableName(int index) {
