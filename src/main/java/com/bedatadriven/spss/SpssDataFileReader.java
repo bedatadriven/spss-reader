@@ -93,7 +93,7 @@ public class SpssDataFileReader {
 
     String fileType = new String(inputStream.readBytes(4));
     if (!"$FL2".equals(fileType)) {
-      throw new IOException("Expected record type != $FL2; not an SPSS file");
+      throw new IOException("Expected record type '$FL2', but got '" + fileType  + "'. Not an SPSS file");
     }
 
     fileHeader = new FileHeader(inputStream);
