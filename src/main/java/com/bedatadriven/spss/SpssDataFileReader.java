@@ -72,6 +72,8 @@ public class SpssDataFileReader {
 
 
   private CaseReader caseReader;
+  
+  private long numCasesOverridden = -1;
 
 
   public SpssDataFileReader(String path) throws IOException {
@@ -167,6 +169,10 @@ public class SpssDataFileReader {
               r.parseInto(variables, variableNames);
               break;
             //case 21: // Value Label Strings - don't know what this is
+            case 16: //number of cases expressed as int64
+              inputStream.skipBytes(8);
+              numCasesOverridden= inStream.readLong();
+              break;
             default:
               // skip record
               inputStream.skipBytes(header.getTotalLength());
@@ -204,7 +210,10 @@ public class SpssDataFileReader {
   /**
    * @return The number of cases
    */
-  public int getNumCases() {
+  public long getNumCases() {
+    if(numCasesOverridden > -1) {
+      return numCasesOverridden;
+    }
     return fileHeader.getNumCases();
   }
 

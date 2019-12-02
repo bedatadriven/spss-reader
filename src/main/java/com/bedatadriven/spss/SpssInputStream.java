@@ -63,7 +63,6 @@ class SpssInputStream {
     return file.readInt();
   }
 
-
   /**
    * @return A 32-bit integer read from the current stream position, adjusting byte order if necessary
    */
@@ -77,7 +76,19 @@ class SpssInputStream {
       return i;
     }
   }
-
+  
+  /**
+   * @return A 64-bit integer (long) read from the current stream position, adjusting byte order if necessary
+   */
+  public long readLong() throws IOException {
+    long l = getFile().readLong();
+    if (isNeedToFlipBytes()) {
+      return Long.reverseBytes(l);
+    } else {
+      return l;
+    }
+  }
+  
   /**
    * @return An 8-byte real number from the current stream position,
    *         adjusting byte order if necessary
