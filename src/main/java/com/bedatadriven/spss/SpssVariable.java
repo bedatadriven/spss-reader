@@ -72,7 +72,7 @@ public class SpssVariable {
    * with each variable holding 255 bytes of the total string
    * length, and the last variable the remainder. 
    */
-  int longStringLength;
+  int veryLongStringLength = -1;
 
   /**
    * The variable's label
@@ -229,6 +229,10 @@ public class SpssVariable {
 
   public boolean isNumeric() {
     return numeric;
+  }
+  
+  public boolean isVeryLongString() {
+    return veryLongStringLength > -1;
   }
 
   public int getIndex() {

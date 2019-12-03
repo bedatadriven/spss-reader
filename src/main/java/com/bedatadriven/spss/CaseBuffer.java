@@ -40,6 +40,27 @@ class CaseBuffer {
   public String getStringValue(int variableIndex) {
     return stringValues[variableIndex];
   }
+  public String getLongStringValue(int variableIndex, int segments) {
+    String longString = getStringValue(variableIndex);
+    
+    if(longString == null) {
+      return longString;
+    }
+    
+    int currentIdx = variableIndex;
+    while (--segments > 0) {
+      currentIdx++;
+      if(currentIdx >= stringValues.length) {
+        break;
+      }
+      String toAppend = getStringValue(currentIdx);
+      if( toAppend == null || toAppend.isEmpty() ) {
+        break;
+      }
+      longString += toAppend; 
+    }
+    return longString;
+  }
 
   public Double getDoubleValue(int variableIndex) {
     return doubleValues[variableIndex];

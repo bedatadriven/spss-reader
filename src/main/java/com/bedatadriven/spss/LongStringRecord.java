@@ -54,9 +54,9 @@ class LongStringRecord {
         strLen = Integer.parseInt(strVal.replaceAll("\\u0000", ""));
 
         if (variables.get(varIndex).shortName.equals(shortName)) {
-          variables.get(varIndex).longStringLength = strLen;
+          variables.get(varIndex).veryLongStringLength = strLen;
         } else {
-          variableNames.get(shortName).longStringLength = strLen;
+          variableNames.get(shortName).veryLongStringLength = strLen;
         }
         tokenStart = i + 1;
         varIndex++;

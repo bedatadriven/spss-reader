@@ -268,6 +268,28 @@ public class SpssDataFileReader {
     return currentCase.getStringValue(variableIndex);
   }
 
+  public String getVeryLongStringValue(String variableName) {
+    return getVeryLongStringValue(getVariableIndex(variableName));
+  }
+
+  public String getVeryLongStringValue(int variableIndex) {
+    int len = variables.get(variableIndex).veryLongStringLength;
+    if(len <= 0) {
+      return null;
+    } else {
+      int segments = (len+251)/252;
+      return currentCase.getLongStringValue(variableIndex, segments);
+    }
+  }
+
+  public boolean isLongString(String variableName) {
+    return isVeryLongString(getVariableIndex(variableName));
+  }
+
+  public boolean isVeryLongString(int variableIndex) {
+    return variables.get(variableIndex).isVeryLongString();
+  }
+
   public boolean isSystemMissing(String variableName) {
     return isSystemMissing(getVariableIndex(variableName));
   }
