@@ -73,6 +73,12 @@ public class SpssVariable {
    * length, and the last variable the remainder. 
    */
   int veryLongStringLength = -1;
+  
+ /**
+  * For variables that are subsequent segments of a
+  * preceding very long string variable.
+  */
+  boolean isVeryLongStringSegment = false;
 
   /**
    * The variable's label
@@ -233,6 +239,10 @@ public class SpssVariable {
   
   public boolean isVeryLongString() {
     return veryLongStringLength > -1;
+  }
+  
+  public boolean isVeryLongStringSegment() {
+    return isVeryLongStringSegment;
   }
 
   public int getIndex() {

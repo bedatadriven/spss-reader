@@ -37,7 +37,6 @@ class LongStringRecord {
     String shortName = null;
     int strLen = 0;
     int tokenStart = 0;
-    int varIndex = 0;
 
     for (int i = 0; i <= longStringsLength; i++) {
       if (i < longStringsLength && longStrings[i] == '=') {
@@ -53,13 +52,14 @@ class LongStringRecord {
         String strVal = inputStream.stringFromBytes(byteArr);
         strLen = Integer.parseInt(strVal.replaceAll("\\u0000", ""));
 
-        if (variables.get(varIndex).shortName.equals(shortName)) {
-          variables.get(varIndex).veryLongStringLength = strLen;
-        } else {
-          variableNames.get(shortName).veryLongStringLength = strLen;
+        SpssVariable target = variableNames.get(shortName);
+        target.veryLongStringLength = strLen;
+        int segments = (strLen+251)/252;
+        for (int idx = target.getIndex() + 1; idx < target.getIndex()+segments ; idx++) {
+          variables.get(idx).isVeryLongStringSegment = true;
         }
+
         tokenStart = i + 1;
-        varIndex++;
       }
     }
   }

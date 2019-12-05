@@ -23,14 +23,14 @@ import java.io.InputStream;
 
 import static org.junit.Assert.*;
 
-public class SpssVeryLongString {
+public class SpssVeryLongStringTest {
 
   private SpssDataFileReader reader;
 
 
   @Before
   public void setUp() throws IOException {
-    InputStream is = SpssVeryLongString.class.getResourceAsStream("/verylongstring.sav");
+    InputStream is = SpssVeryLongStringTest.class.getResourceAsStream("/verylongstring.sav");
     assertNotNull("InputStream", is);
     reader = new SpssDataFileReader(new DataInputStream(is));
   }
@@ -56,18 +56,24 @@ public class SpssVeryLongString {
     assertEquals("Some short text", reader.getStringValue(1));
 
     assertFalse(reader.isVeryLongString(0));
+    assertFalse(reader.isVeryLongStringSegment(0));
     assertFalse(reader.isVeryLongString(1));
+    assertFalse(reader.isVeryLongStringSegment(1));
     
     assertTrue(reader.isVeryLongString(2));
     
-    assertFalse(reader.isVeryLongString(3));
-    assertFalse(reader.isVeryLongString(10));
+    for(int i = 3; i < 10; i++) {
+      assertFalse(reader.isVeryLongString(i));
+      assertTrue(reader.isVeryLongStringSegment(i));
+    }
     
 
     assertTrue(reader.getVeryLongStringValue(2).endsWith("are unused."));
     assertTrue(reader.getVeryLongStringValue(2).startsWith("This string counts 1846 characters"));
     assertEquals(1846, reader.getVeryLongStringValue(2).length());
-
+    
+    assertFalse(reader.isVeryLongString(10));
+    assertFalse(reader.isVeryLongStringSegment(10));
     assertEquals(2, (int)reader.getDoubleValue(10));
 
     reader.readNextCase();

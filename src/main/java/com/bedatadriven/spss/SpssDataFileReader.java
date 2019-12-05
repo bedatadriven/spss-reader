@@ -290,6 +290,14 @@ public class SpssDataFileReader {
     return variables.get(variableIndex).isVeryLongString();
   }
 
+  public boolean isVeryLongStringSegment(String variableName) {
+    return isVeryLongStringSegment(getVariableIndex(variableName));
+  }
+
+  public boolean isVeryLongStringSegment(int variableIndex) {
+    return variables.get(variableIndex).isVeryLongStringSegment();
+  }
+
   public boolean isSystemMissing(String variableName) {
     return isSystemMissing(getVariableIndex(variableName));
   }
