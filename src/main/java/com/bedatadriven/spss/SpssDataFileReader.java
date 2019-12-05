@@ -282,7 +282,7 @@ public class SpssDataFileReader {
     }
   }
 
-  public boolean isLongString(String variableName) {
+  public boolean isVeryLongString(String variableName) {
     return isVeryLongString(getVariableIndex(variableName));
   }
 
