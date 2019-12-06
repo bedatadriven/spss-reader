@@ -18,10 +18,12 @@ package com.bedatadriven.spss;
 class CaseBuffer {
   private String[] stringValues;
   private double[] doubleValues;
+  private int[] trailingSpaces;
 
   CaseBuffer(int variableCount) {
     stringValues = new String[variableCount];
     doubleValues = new double[variableCount];
+    trailingSpaces = new int[variableCount];
   }
 
   void set(int index, String value) {
@@ -30,6 +32,10 @@ class CaseBuffer {
 
   void set(int index, double value) {
     doubleValues[index] = value;
+  }
+  
+  void setTrailingSpaces(int index, int trailing) {
+    trailingSpaces[index] = trailing;
   }
 
   void setMissing(int index) {
@@ -40,26 +46,29 @@ class CaseBuffer {
   public String getStringValue(int variableIndex) {
     return stringValues[variableIndex];
   }
-  public String getLongStringValue(int variableIndex, int segments) {
-    String longString = getStringValue(variableIndex);
-    
-    if(longString == null) {
-      return longString;
+  
+  private void appendStringSegmentValue(int variableIndex, StringBuilder sb) {
+    String str = getStringValue(variableIndex);
+    if(str != null) {
+      sb.append( getStringValue(variableIndex));
+      for(int i=0; i<trailingSpaces[variableIndex]; i++) {
+        sb.append(' ');
+      }
     }
-    
+  }
+  
+  public String getLongStringValue(int variableIndex, int segments) {
+    StringBuilder sb = new StringBuilder();
     int currentIdx = variableIndex;
-    while (--segments > 0) {
-      currentIdx++;
+
+    while (0 < segments--) {
       if(currentIdx >= stringValues.length) {
         break;
       }
-      String toAppend = getStringValue(currentIdx);
-      if( toAppend == null || toAppend.isEmpty() ) {
-        break;
-      }
-      longString += toAppend; 
+      appendStringSegmentValue(currentIdx, sb);
+      currentIdx++;
     }
-    return longString;
+    return sb.toString().trim();
   }
 
   public Double getDoubleValue(int variableIndex) {
