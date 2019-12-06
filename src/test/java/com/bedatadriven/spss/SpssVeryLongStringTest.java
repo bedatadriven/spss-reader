@@ -67,10 +67,17 @@ public class SpssVeryLongStringTest {
       assertTrue(reader.isVeryLongStringSegment(i));
     }
     
-
+    //small test for encoding, apostrophe should be in the string when read as UTF-8 
+    assertTrue("The encoding of the reader doesn't seem to be set to UTF-8, which the document specifies", reader.getVeryLongStringValue(2).contains("string’s"));
+    
+    
+    assertEquals(1845, reader.getVeryLongStringValue(2).length());
+    assertTrue(reader.getVeryLongStringValue(2).startsWith("This string counts 1845 characters"));
     assertTrue(reader.getVeryLongStringValue(2).endsWith("are unused."));
-    assertTrue(reader.getVeryLongStringValue(2).startsWith("This string counts 1846 characters"));
-    assertEquals(1846, reader.getVeryLongStringValue(2).length());
+    //test merge positions
+    assertTrue(reader.getVeryLongStringValue(2).contains("called a very long string, as a collection of strings"));
+    assertTrue(reader.getVeryLongStringValue(2).contains("very long string with a width of"));
+    
     
     assertFalse(reader.isVeryLongString(10));
     assertFalse(reader.isVeryLongStringSegment(10));
@@ -87,6 +94,7 @@ public class SpssVeryLongStringTest {
     assertTrue(reader.isVeryLongString(2));
 
     assertFalse(reader.isVeryLongString(3));
+    
     assertFalse(reader.isVeryLongString(10));
 
     assertEquals(0 ,reader.getVeryLongStringValue(2).length());
