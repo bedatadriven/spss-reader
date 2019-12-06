@@ -159,6 +159,7 @@ public class SpssDataFileReader {
 
             case 20: // encoding
               encoding = new String(inputStream.readBytes(header.getTotalLength())).trim();
+              inputStream.setEncoding(encoding);
               break;
 
             //case 5:  // Variable sets

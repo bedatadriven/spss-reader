@@ -111,6 +111,10 @@ class SpssInputStream {
   public void skipBytes(int count) throws IOException {
     readBytes(count);
   }
+  
+  public void setEncoding(String encoding) {
+    this.charset = Charset.forName(encoding);
+  }
 
   /**
    * Encodes a series of bytes into a character stream, taking
