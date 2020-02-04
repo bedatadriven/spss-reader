@@ -16,7 +16,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.bedatadriven.spss</groupId>
   <artifactId>spss-reader</artifactId>
-  <version>1.3-SNAPSHOT</version>
+  <version>1.3</version>
   <packaging>jar</packaging>
 
   <name>SPSS Datafile Reader</name>
