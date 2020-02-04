@@ -72,6 +72,8 @@ public class SpssDataFileReader {
 
 
   private CaseReader caseReader;
+  
+  private long numCasesOverridden = -1;
 
 
   public SpssDataFileReader(String path) throws IOException {
@@ -91,11 +93,8 @@ public class SpssDataFileReader {
 
     String fileType = new String(inputStream.readBytes(4));
     if (!"$FL2".equals(fileType)) {
-      throw new IOException("Expected record type != $FL2; not an SPSS file");
+      throw new IOException("Expected record type '$FL2', but got '" + fileType  + "'. Not an SPSS file");
     }
-
-    int layoutCode = inputStream.readRawInt();
-    inputStream.setNeedToFlipBytes((layoutCode != 2));
 
     fileHeader = new FileHeader(inputStream);
 
@@ -160,13 +159,21 @@ public class SpssDataFileReader {
 
             case 20: // encoding
               encoding = new String(inputStream.readBytes(header.getTotalLength())).trim();
+              inputStream.setEncoding(encoding);
               break;
 
             //case 5:  // Variable sets
             //case 6:  // Trends
             //case 11: // Display - don't know what this
-            //case 14: // very long strings
+            case 14: // very long strings
+              LongStringRecord r = new LongStringRecord(header, inStream);
+              r.parseInto(variables, variableNames);
+              break;
             //case 21: // Value Label Strings - don't know what this is
+            case 16: //number of cases expressed as int64
+              inputStream.skipBytes(8);
+              numCasesOverridden= inStream.readLong();
+              break;
             default:
               // skip record
               inputStream.skipBytes(header.getTotalLength());
@@ -184,7 +191,7 @@ public class SpssDataFileReader {
 
     currentCase = new CaseBuffer(variables.size());
 
-    if (!versionInfo.isCompressed()) {
+    if (!isCompressed()) {
       caseReader = new CaseReader(inputStream, variables, missingValueHeader, fileHeader.getNumCases(), currentCase);
     } else {
       caseReader = new CompressedCaseReader(inputStream, variables, missingValueHeader, fileHeader.getNumCases(), currentCase);
@@ -204,7 +211,10 @@ public class SpssDataFileReader {
   /**
    * @return The number of cases
    */
-  public int getNumCases() {
+  public long getNumCases() {
+    if(numCasesOverridden > -1) {
+      return numCasesOverridden;
+    }
     return fileHeader.getNumCases();
   }
 
@@ -216,7 +226,7 @@ public class SpssDataFileReader {
    * @return True if this datafile is compressed, false if its uncompressed
    */
   public boolean isCompressed() {
-    return versionInfo.isCompressed();
+    return fileHeader.isCompressed();
   }
 
   public String getVariableName(int index) {
@@ -257,6 +267,36 @@ public class SpssDataFileReader {
 
   public String getStringValue(int variableIndex) {
     return currentCase.getStringValue(variableIndex);
+  }
+
+  public String getVeryLongStringValue(String variableName) {
+    return getVeryLongStringValue(getVariableIndex(variableName));
+  }
+
+  public String getVeryLongStringValue(int variableIndex) {
+    int len = variables.get(variableIndex).veryLongStringLength;
+    if(len <= 0) {
+      return null;
+    } else {
+      int segments = (len+251)/252;
+      return currentCase.getLongStringValue(variableIndex, segments);
+    }
+  }
+
+  public boolean isVeryLongString(String variableName) {
+    return isVeryLongString(getVariableIndex(variableName));
+  }
+
+  public boolean isVeryLongString(int variableIndex) {
+    return variables.get(variableIndex).isVeryLongString();
+  }
+
+  public boolean isVeryLongStringSegment(String variableName) {
+    return isVeryLongStringSegment(getVariableIndex(variableName));
+  }
+
+  public boolean isVeryLongStringSegment(int variableIndex) {
+    return variables.get(variableIndex).isVeryLongStringSegment();
   }
 
   public boolean isSystemMissing(String variableName) {

@@ -97,33 +97,33 @@ class CompressedCaseReader extends CaseReader {
       } else {
         StringBuilder buffer = new StringBuilder();
         int totalBytesRead = 0;
-        int whiteSpaceCount = 0;
         do {
           // the "compressed" strings are stored
           // in 8-byte segments. If the segment is all
           // spaces, the storage type = 254 and no other
           // data is written. Otherwise, it's 253 and 8-bytes
           // are stored.
-          //
-          // Most of the time, the 8-space blocks are trailing
-          // spaces so we don't want to bother adding it unless
-          // its followed by non-space characters
           storageFlag = readNextStorageFlag();
           if (storageFlag == STRING_FLAG) {
-            while (whiteSpaceCount > 0) {
-              buffer.append(' ');
-              whiteSpaceCount--;
-            }
-
             buffer.append(inputStream.stringFromBytes(inputStream.readBytes(8)));
           } else if (storageFlag == WHITESPACE_FLAG) {
-            whiteSpaceCount += 8;
+            buffer.append("        "); //trailing white spaces get trimmed at the end
           }
           totalBytesRead += 8;
-
         } while (totalBytesRead < var.stringLength);
 
-        currentRow.set(var.getIndex(), buffer.toString().trim());
+        //remove the padding bytes used for filling 8 byte block
+        int paddingBytes = totalBytesRead - var.stringLength;
+        int end = buffer.length()-paddingBytes;        
+        String strValue = buffer.substring(0,  end);
+        String trimmedValue = strValue.trim();
+        
+        if(var.isVeryLongString() || var.isVeryLongStringSegment()) {
+          int trailingSpaces = strValue.length() - trimmedValue.length();
+          currentRow.setTrailingSpaces(var.getIndex(), trailingSpaces);
+        }
+        
+        currentRow.set(var.getIndex(), trimmedValue);
       }
     }
   }

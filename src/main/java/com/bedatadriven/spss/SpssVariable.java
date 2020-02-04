@@ -65,6 +65,20 @@ public class SpssVariable {
    * field in bytes
    */
   int stringLength;
+  
+  /**
+   * For variables stored as very long string value.
+   * Such strings get stored using multiple variables (as text),
+   * with each variable holding 255 bytes of the total string
+   * length, and the last variable the remainder. 
+   */
+  int veryLongStringLength = -1;
+  
+ /**
+  * For variables that are subsequent segments of a
+  * preceding very long string variable.
+  */
+  boolean isVeryLongStringSegment = false;
 
   /**
    * The variable's label
@@ -221,6 +235,14 @@ public class SpssVariable {
 
   public boolean isNumeric() {
     return numeric;
+  }
+  
+  public boolean isVeryLongString() {
+    return veryLongStringLength > -1;
+  }
+  
+  public boolean isVeryLongStringSegment() {
+    return isVeryLongStringSegment;
   }
 
   public int getIndex() {

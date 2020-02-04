@@ -18,10 +18,12 @@ package com.bedatadriven.spss;
 class CaseBuffer {
   private String[] stringValues;
   private double[] doubleValues;
+  private int[] trailingSpaces;
 
   CaseBuffer(int variableCount) {
     stringValues = new String[variableCount];
     doubleValues = new double[variableCount];
+    trailingSpaces = new int[variableCount];
   }
 
   void set(int index, String value) {
@@ -31,6 +33,10 @@ class CaseBuffer {
   void set(int index, double value) {
     doubleValues[index] = value;
   }
+  
+  void setTrailingSpaces(int index, int trailing) {
+    trailingSpaces[index] = trailing;
+  }
 
   void setMissing(int index) {
     doubleValues[index] = Double.NaN;
@@ -39,6 +45,30 @@ class CaseBuffer {
 
   public String getStringValue(int variableIndex) {
     return stringValues[variableIndex];
+  }
+  
+  private void appendStringSegmentValue(int variableIndex, StringBuilder sb) {
+    String str = getStringValue(variableIndex);
+    if(str != null) {
+      sb.append( getStringValue(variableIndex));
+      for(int i=0; i<trailingSpaces[variableIndex]; i++) {
+        sb.append(' ');
+      }
+    }
+  }
+  
+  public String getLongStringValue(int variableIndex, int segments) {
+    StringBuilder sb = new StringBuilder();
+    int currentIdx = variableIndex;
+
+    while (0 < segments--) {
+      if(currentIdx >= stringValues.length) {
+        break;
+      }
+      appendStringSegmentValue(currentIdx, sb);
+      currentIdx++;
+    }
+    return sb.toString().trim();
   }
 
   public Double getDoubleValue(int variableIndex) {
