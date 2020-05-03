@@ -7,9 +7,9 @@ Java library to read SPSS files.
 ## Adding to your project
 
     <dependency>
-       <groupId>com.bedatadriven</groupId>
-       <artifactId>spss</artifactId>
-       <version>1.3</version>
+      <groupId>com.bedatadriven.spss</groupId>
+      <artifactId>spss-reader</artifactId>
+      <version>1.3</version>
     </dependency>
     
 ## Reading an SPSS File
