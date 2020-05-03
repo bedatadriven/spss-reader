@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 BeDataDriven Groep BV
+ * Copyright 2017-2019 BeDataDriven Groep BV
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -19,13 +19,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
-class SpssInputStream {
+public class SpssInputStream {
   private DataInputStream file;
   private boolean needToFlipBytes;
-  private Charset charset = Charset.forName("Cp1252");
+  private final Charset charset;
+
+  public SpssInputStream(InputStream is, Charset charset) {
+    this.file = new DataInputStream(is);
+    this.charset = charset;
+  }
 
   public SpssInputStream(InputStream is) {
-    file = new DataInputStream(is);
+    this(is, Charset.forName("Cp1252"));
   }
 
   public DataInputStream getFile() {
