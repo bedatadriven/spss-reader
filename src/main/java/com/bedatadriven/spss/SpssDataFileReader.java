@@ -130,7 +130,13 @@ public class SpssDataFileReader {
           int variableCount = inputStream.readInt();
           for (int i = 0; i < variableCount; i++) {
             int variablePosition = inputStream.readInt() - 1;  // we use a zero-based array, spss file is one-based
-            variableRecords[variablePosition].valueLabels = currentValueLabels.getLabels();
+
+            if (variableRecords[variablePosition].getTypeCode() == 0) {
+              variableRecords[variablePosition].valueLabels = currentValueLabels.getLabels();
+            } else {
+              variableRecords[variablePosition].stringValueLabels = currentValueLabels.getStringLabels();
+            }
+
           }
           break;
 
@@ -169,7 +175,10 @@ public class SpssDataFileReader {
               LongStringRecord r = new LongStringRecord(header, inStream);
               r.parseInto(variables, variableNames);
               break;
-            //case 21: // Value Label Strings - don't know what this is
+            case 21:
+              LongStringValueLabelRecord longLabelsRecord = new LongStringValueLabelRecord(header, inStream);
+              longLabelsRecord.parseInto(variables, variableNames);
+              break;
             case 16: //number of cases expressed as int64
               inputStream.skipBytes(8);
               numCasesOverridden= inStream.readLong();
