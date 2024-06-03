@@ -28,7 +28,7 @@ class LongStringRecord {
     longStrings = inputStream.readBytes(header.getTotalLength());
   }
 
-  void parseInto(List<SpssVariable> variables, Map<String, SpssVariable> variableNames) {
+  void parseInto(List<SpssVariableReader> variables, Map<String, SpssVariableReader> variableNames) {
 
     // longNames is in the format of
     // SHORT1=Longer name\tSHORT2=Another longer name...
@@ -52,7 +52,7 @@ class LongStringRecord {
         String strVal = inputStream.stringFromBytes(byteArr);
         strLen = Integer.parseInt(strVal.replaceAll("\\u0000", ""));
 
-        SpssVariable target = variableNames.get(shortName);
+        SpssVariableReader target = variableNames.get(shortName);
         target.veryLongStringLength = strLen;
         int segments = (strLen+251)/252;
         for (int idx = target.getIndex() + 1; idx < target.getIndex()+segments ; idx++) {

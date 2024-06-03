@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
@@ -27,6 +28,8 @@ import java.util.*;
  */
 public class SpssDataFileReader {
 
+  public static final byte[] MAGIC_BYTES = "$FL2".getBytes(StandardCharsets.US_ASCII);
+  public static final int TERMINATION_RECORD_TYPE = 999;
   private SpssInputStream inputStream;
 
   private String encoding;
@@ -54,7 +57,7 @@ public class SpssDataFileReader {
    * Here we call the physical position within the file the "position"
    * and the logical order as the "index"
    */
-  private SpssVariable[] variableRecords;
+  private SpssVariableReader[] variableRecords;
 
   /**
    * This is a *logical* collection of variables.
@@ -62,17 +65,17 @@ public class SpssDataFileReader {
    * There may be fewer variables in this collection than
    * physical records in <code>variableRecords</code>
    */
-  private List<SpssVariable> variables;
+  private List<SpssVariableReader> variables;
 
 
   /**
    * Map of "short" variable name to in-memory Variable data structure
    */
-  private Map<String, SpssVariable> variableNames;
+  private Map<String, SpssVariableReader> variableNames;
 
 
   private CaseReader caseReader;
-  
+
   private long numCasesOverridden = -1;
 
 
@@ -91,14 +94,15 @@ public class SpssDataFileReader {
   private SpssDataFileReader(SpssInputStream inStream) throws IOException {
     inputStream = inStream;
 
-    String fileType = new String(inputStream.readBytes(4));
-    if (!"$FL2".equals(fileType)) {
-      throw new IOException("Expected record type '$FL2', but got '" + fileType  + "'. Not an SPSS file");
+    byte[] fileType = inputStream.readBytes(4);
+    if (!Arrays.equals(MAGIC_BYTES, fileType)) {
+      throw new IOException("Expected record type '$FL2', but got '" + new String(fileType, StandardCharsets.US_ASCII)
+          + "'. Not an SPSS file");
     }
 
     fileHeader = new FileHeader(inputStream);
 
-    variableRecords = new SpssVariable[fileHeader.getCaseSize()];
+    variableRecords = new SpssVariableReader[fileHeader.getCaseSize()];
     variables = new ArrayList<>();
     variableNames = new HashMap<>();
 
@@ -110,12 +114,13 @@ public class SpssDataFileReader {
     // read dictionary records
     do {
       recordType = inputStream.readInt();
+      System.out.println("Record type " + recordType);
 
       switch (recordType) {
-        case SpssVariable.RECORD_TYPE:
+        case SpssVariableReader.RECORD_TYPE:
           // this is some sort of continuation record...
           // it doesn't seem to contain any information
-          SpssVariable variable = new SpssVariable(inputStream, currentVariablePosition, variables.size());
+          SpssVariableReader variable = new SpssVariableReader(inputStream, currentVariablePosition, variables.size());
           if (variable.getTypeCode() != -1) {
             addVariable(variable);
           }
@@ -180,14 +185,14 @@ public class SpssDataFileReader {
               break;
           }
           break;
-        case 999: // termination record
+        case TERMINATION_RECORD_TYPE: // termination record
           inputStream.skipBytes(4);
           break;
         default:
           break; // err... we shouldn't get here.
       }
 
-    } while (recordType != 999);
+    } while (recordType != TERMINATION_RECORD_TYPE);
 
     currentCase = new CaseBuffer(variables.size());
 
@@ -198,13 +203,13 @@ public class SpssDataFileReader {
     }
   }
 
-  private void addVariable(SpssVariable variable) {
+  private void addVariable(SpssVariableReader variable) {
     variables.add(variable);
     variableRecords[variable.getPositionInRecord()] = variable;
     variableNames.put(variable.getShortName(), variable);
   }
 
-  public List<SpssVariable> getVariables() {
+  public List<SpssVariableReader> getVariables() {
     return Collections.unmodifiableList(variables);
   }
 
@@ -234,7 +239,7 @@ public class SpssDataFileReader {
   }
 
   public int getVariableIndex(String name) {
-    for (SpssVariable variable : variables) {
+    for (SpssVariableReader variable : variables) {
       if (variable.getVariableName().equals(name)) {
         return variable.getIndex();
       }

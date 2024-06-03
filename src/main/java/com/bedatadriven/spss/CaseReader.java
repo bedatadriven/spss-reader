@@ -20,7 +20,7 @@ import java.util.List;
 
 class CaseReader {
 
-  protected final List<SpssVariable> variables;
+  protected final List<SpssVariableReader> variables;
   protected final SpssInputStream inputStream;
   protected final MissingValuesHeader missingValues;
   protected final CaseBuffer currentRow;
@@ -28,7 +28,7 @@ class CaseReader {
 
   protected int currentRowIndex;
 
-  public CaseReader(SpssInputStream inputStream, List<SpssVariable> variables,
+  public CaseReader(SpssInputStream inputStream, List<SpssVariableReader> variables,
                     MissingValuesHeader missingValues, int numCases, CaseBuffer currentRow) {
     this.inputStream = inputStream;
     this.variables = variables;
@@ -61,7 +61,7 @@ class CaseReader {
   }
 
   protected void readRow() throws IOException {
-    for (SpssVariable var : variables) {
+    for (SpssVariableReader var : variables) {
       if (var.isNumeric()) {
         double value = inputStream.readDouble();
         if (value == missingValues.getSystemMissingValue()) {

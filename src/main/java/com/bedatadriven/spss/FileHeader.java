@@ -18,6 +18,10 @@ import java.io.IOException;
 
 class FileHeader {
 
+  public static final int PRODUCT_NAME_LENGTH = 60;
+  public static final int LAYOUT_2 = 2;
+  public static final int LAYOUT_3 = 3;
+  public static final int FILE_LABEL_LENGTH = 64;
   private String productName;
   private int compression;
   private int weightVariablePosition;
@@ -31,9 +35,9 @@ class FileHeader {
 
   public FileHeader(SpssInputStream inputStream) throws IOException {
 
-    productName = new String(inputStream.readBytes(60));
+    productName = new String(inputStream.readBytes(PRODUCT_NAME_LENGTH));
     int layoutCode = inputStream.readInt();
-    inputStream.setNeedToFlipBytes((layoutCode != 2 && layoutCode != 3));
+    inputStream.setNeedToFlipBytes((layoutCode != LAYOUT_2 && layoutCode != LAYOUT_3));
 
     caseSize = inputStream.readInt();
 
@@ -45,7 +49,7 @@ class FileHeader {
     bias = inputStream.readDouble();
     creationDate = inputStream.readBytes(9);
     creationTime = inputStream.readBytes(8);
-    fileLabel = inputStream.readBytes(64);
+    fileLabel = inputStream.readBytes(FILE_LABEL_LENGTH);
 
     inputStream.skipBytes(3); // alignment
 

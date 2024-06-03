@@ -25,7 +25,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-public class SpssVariableNameCharsTest {
+public class SpssVariableReaderNameCharsTest {
 	private SpssDataFileReader reader;
 
 	@Before

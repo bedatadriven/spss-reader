@@ -113,7 +113,7 @@ public class SpssDataFileReaderTest {
     SpssVariableFormat printFormat = reader.getVariables().get(0).getPrintFormat();
     assertEquals(0, printFormat.getDecimalPlaces());
     assertEquals(4, printFormat.getColumnWidth());
-    assertEquals(5, printFormat.getType()); // 5 is "NUMERIC"
+    assertEquals(5, printFormat.getTypeCode()); // 5 is "NUMERIC"
   }
 
   @Test
@@ -121,6 +121,6 @@ public class SpssDataFileReaderTest {
     SpssVariableFormat writeFormat = reader.getVariables().get(0).getWriteFormat();
     assertEquals(0, writeFormat.getDecimalPlaces());
     assertEquals(4, writeFormat.getColumnWidth());
-    assertEquals(5, writeFormat.getType()); // 5 is "NUMERIC"
+    assertEquals(5, writeFormat.getTypeCode()); // 5 is "NUMERIC"
   }
 }

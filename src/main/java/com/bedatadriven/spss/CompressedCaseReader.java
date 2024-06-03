@@ -55,7 +55,7 @@ class CompressedCaseReader extends CaseReader {
   private int[] flags = new int[8];
 
   public CompressedCaseReader(SpssInputStream inputStream,
-                              List<SpssVariable> variables, MissingValuesHeader missingValues,
+                              List<SpssVariableReader> variables, MissingValuesHeader missingValues,
                               int numCases, CaseBuffer currentRow) {
 
     super(inputStream, variables, missingValues, numCases, currentRow);
@@ -83,7 +83,7 @@ class CompressedCaseReader extends CaseReader {
 
     int storageFlag = 0;
 
-    for (SpssVariable var : variables) {
+    for (SpssVariableReader var : variables) {
       if (var.isNumeric()) {
         storageFlag = readNextStorageFlag();
 

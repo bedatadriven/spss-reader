@@ -28,7 +28,7 @@ class LongVariableNamesRecord {
     longNames = inputStream.readBytes(header.getTotalLength());
   }
 
-  void parseInto(List<SpssVariable> variables, Map<String, SpssVariable> variableNames) {
+  void parseInto(List<SpssVariableReader> variables, Map<String, SpssVariableReader> variableNames) {
 
     // longNames is in the format of
     // SHORT1=Longer name\tSHORT2=Another longer name...
