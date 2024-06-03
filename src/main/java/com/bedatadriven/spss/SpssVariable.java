@@ -122,6 +122,7 @@ public class SpssVariable {
    */
   Map<Double, byte[]> valueLabels;
 
+  Map<String, byte[]> stringValueLabels;
 
   SpssVariable(SpssInputStream inputStream, int position, int logicalIndex) throws IOException {
     this.inputStream = inputStream;
@@ -278,4 +279,14 @@ public class SpssVariable {
     }
     return map;
   }
+
+    public Map<String, String> getStringValueLabels() {
+        Map<String, String> map = new HashMap<>();
+        if (stringValueLabels != null) {
+            for (Map.Entry<String, byte[]> entry : stringValueLabels.entrySet()) {
+                map.put(entry.getKey(), inputStream.stringFromBytes(entry.getValue()));
+            }
+        }
+        return map;
+    }
 }
